@@ -1,0 +1,136 @@
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+
+namespace Advent_of_Code_2020
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // 13-17 s: ssssssssssssgsssj
+            string[] inputs = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
+
+            int validPws = 0;
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                bool valid = Vaild(inputs[i]);
+                if (valid)
+                    validPws++;
+            }
+            Console.WriteLine(validPws);
+        }
+        static bool Vaild(string pw)
+        {
+            int space = indexOfFirstSpace(pw);
+            string betweenNums = pw.Substring(0, space);
+            string[] nums = betweenNums.Split('-');
+            int min = Int32.Parse(nums[0]);
+            int max = Int32.Parse(nums[1]);
+            char charInPW = pw[space + 1];
+            string rawPW = pw.Substring(space + 4);
+            int numOfCharsInThing = numOfCharsOfLetter(rawPW, charInPW);
+            if (numOfCharsInThing >= min && numOfCharsInThing <= max)
+                return true;
+            return false;
+        }
+        static int indexOfFirstSpace(string pw)
+        {
+            for (int i = 0; i < pw.Length; i++)
+            {
+                if (pw[i] == ' ')
+                    return i;
+            }
+            return -1;
+        }
+        static int numOfCharsOfLetter(string word, char let)
+        {
+            int num = 0;
+            foreach(char c in word)
+            {
+                if (c == let)
+                    num++;
+            }
+            return num;
+        }
+    }
+}
+
+
+
+
+
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+
+namespace Advent_of_Code_2020
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // 13-17 s: ssssssssssssgsssj
+            string[] inputs = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
+
+            int validPws = 0;
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                bool valid = Vaild(inputs[i]);
+                if (valid)
+                    validPws++;
+            }
+            Console.WriteLine(validPws);
+        }
+        static bool Vaild(string pw)
+        {
+            int space = indexOfFirstSpace(pw);
+            string betweenNums = pw.Substring(0, space);
+            string[] nums = betweenNums.Split('-');
+            int min = Int32.Parse(nums[0]);
+            int max = Int32.Parse(nums[1]);
+            char charInPW = pw[space + 1];
+            string rawPW = pw.Substring(space + 4);
+            int numOfCharsInThing = numOfCharsOfLetter(rawPW, charInPW);
+
+            bool pos1 = rawPW[min-1] == charInPW;
+            bool pos2 = rawPW[max-1] == charInPW;
+            if (pos1 ^ pos2)
+            {
+                return true;
+            }
+            return false;
+        }
+        static int indexOfFirstSpace(string pw)
+        {
+            for (int i = 0; i < pw.Length; i++)
+            {
+                if (pw[i] == ' ')
+                    return i;
+            }
+            return -1;
+        }
+        static int numOfCharsOfLetter(string word, char let)
+        {
+            int num = 0;
+            foreach(char c in word)
+            {
+                if (c == let)
+                    num++;
+            }
+            return num;
+        }
+    }
+}
+
+
+
+
+
+27 min for both

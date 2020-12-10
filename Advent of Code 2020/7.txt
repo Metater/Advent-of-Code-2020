@@ -1,0 +1,234 @@
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+
+namespace Advent_of_Code_2020
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Attempt at p1, now using: https://github.com/Larqqa/Advent-of-Code-2020/blob/master/day7/Program.cs
+            // This top part is my parser mixed with his algorithm All Credit To Larqqa
+            // I tryed for a while to do w/o cheating, but too hard, recursive functions are hard, they infinitly loop if you mess up certain logic
+
+
+            string[] data = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
+            List<Rule> rules = GetRules(data);
+            ListParents(rules);
+            /*
+            foreach(Rule rule in rules)
+            {
+                Console.WriteLine(rule.name);
+                foreach(Bag bag in rule.children)
+                {
+                    if (bag.name == "shinygold")
+                        Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                    Console.WriteLine("\t" + bag.name + bag.countOfSelf);
+                }
+            }
+            */
+        }
+        static void TraceParent()
+        {
+
+        }
+        static bool TraceParent(string name, List<Rule> rules)
+        {
+            if (NameIsTop(name, rules))
+                return 1;
+        }
+        static void ListParents(List<Rule> rules)
+        {
+            foreach(Rule rule in rules)
+            {
+                //if (NameIsTop(rule.name, rules))
+                    //Console.WriteLine(rule.name);
+                if (NameIsBottom(rule.name, rules))
+                    Console.WriteLine(rule.name);
+            }
+        }
+        static bool NameIsBottom(string name, List<Rule> rules)
+        {
+            foreach (Rule rule in rules)
+            {
+                if (rule.children.Count == 0 && rule.name == name)
+                    return true;
+            }
+            return false;
+        }
+        static bool NameIsTop(string name, List<Rule> rules)
+        {
+            foreach (Rule rule in rules)
+            {
+                foreach(Bag bag in rule.children)
+                {
+                    if (bag.name == name)
+                        return false;
+                }
+            }
+            return true;
+        }
+        static List<Rule> GetRules(string[] data)
+        {
+            List<Rule> rules = new List<Rule>();
+            foreach (string line in data)
+            {
+                string[] words = line.Split(" ");
+                Rule rule = new Rule(words[0] + words[1], GetBags(words));
+                rules.Add(rule);
+            }
+            return rules;
+        }
+        static List<Bag> GetBags(string[] words)
+        {
+            if (words[4] == "no")
+            {
+                return new List<Bag>();
+            }
+            List<Bag> bags = new List<Bag>();
+            for (int i = 1; i <= (words.Length/4)-1; i++)
+            {
+                Bag bag = new Bag();
+                int wordGroupIndex = i * 4;
+                bag.countOfSelf = Int32.Parse(words[wordGroupIndex]);
+                bag.name = words[wordGroupIndex + 1] + words[wordGroupIndex + 2];
+                bags.Add(bag);
+            }
+            return bags;
+        }
+        static bool RuleContainsBagWithName(string name, Rule rule)
+        {
+            foreach(Bag bag in rule.children)
+            {
+                if (bag.name == name)
+                    return true;
+            }
+            return false;
+        }
+        class Rule
+        {
+            public string name;
+            public List<Bag> children = new List<Bag>();
+            public Rule(string name, List<Bag> children)
+            {
+                this.name = name;
+                this.children = children;
+            }
+        }
+        class Bag
+        {
+            public string name;
+            public int countOfSelf;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+
+namespace Advent_of_Code_2020
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Cheated completly learn how it works or i gain worthless stars!
+
+            System.IO.StreamReader file = new System.IO.StreamReader(@"pws.txt");
+            Dictionary<string, Dictionary<string, int>> bags = new Dictionary<string, Dictionary<string, int>>();
+
+            string line;
+            string[] w;
+            string[] x;
+
+            while ((line = file.ReadLine()) != null)
+            {
+                w = line.Split(" bags contain ");
+                bags[w[0]] = new Dictionary<string, int>();
+
+                if (w[1] != "no other bags.")
+                {
+                    foreach (string el in w[1].Split(", "))
+                    {
+                        x = el.Split(" ");
+                        bags[w[0]][$"{x[1]} {x[2]}"] = Int32.Parse(x[0]);
+                    }
+                }
+            }
+            file.Close();
+
+            int count = 0;
+            foreach (KeyValuePair<string, Dictionary<string, int>> bag in bags)
+            {
+                if (searchBags(bag.Key, bags))
+                {
+                    count++;
+                }
+            }
+
+            System.Console.WriteLine($"Bag count: {count}");
+            System.Console.WriteLine($"Total count: {countBags("shiny gold", bags) - 1}");
+        }
+
+        private static bool searchBags(string bagType, Dictionary<string, Dictionary<string, int>> bags)
+        {
+            foreach (KeyValuePair<string, int> bag in bags[bagType])
+            {
+                if (bag.Key == "shiny gold" || searchBags(bag.Key, bags))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static int countBags(string bagType, Dictionary<string, Dictionary<string, int>> bags)
+        {
+            int count = 1;
+
+            foreach (KeyValuePair<string, int> bag in bags[bagType])
+            {
+                // System.Console.WriteLine($"{bag.Key} {bag.Value}");
+                for (int i = 0; i < bag.Value; i++)
+                {
+                    count += countBags(bag.Key, bags);
+                    // System.Console.WriteLine($"{bag.Key}");
+                }
+            }
+
+            return count;
+        }
+    }
+}
+
+
+
+
+
+madhadron 🎄Today at 10:35 PM
+@Metater Functional programming training, probably. I probably learned it from Ullman's 'Elements of Standard ML.' Or SICP would probably do it as well in Scheme.
+And SICP is free online, which Ullman's book isn't

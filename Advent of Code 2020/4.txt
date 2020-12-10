@@ -1,0 +1,228 @@
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+
+namespace Advent_of_Code_2020
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] data = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
+            string[] keys = { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid" };
+            List<List<string>> passports = new List<List<string>>();
+            List<string> kvpsInPartialPassport = new List<string>();
+            int validPPs = 0;
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (data[i] == "" || i == data.Length)
+                {
+                    passports.Add(kvpsInPartialPassport);
+                    kvpsInPartialPassport = new List<string>();
+                }
+                else
+                {
+                    string[] kvps = data[i].Split(" ");
+                    foreach (string kvp in kvps)
+                    {
+                        kvpsInPartialPassport.Add(kvp);
+                    }
+                }
+            }
+            foreach(List<string> passport in passports)
+            {
+                if (PassportValid(passport))
+                    validPPs++;
+            }
+            Console.WriteLine(validPPs);
+            bool PassportValid(List<string> pp)
+            {
+                List<string> justKeys = new List<string>();
+                foreach (string kvp in pp)
+                {
+                    justKeys.Add(kvp.Split(":")[0]);
+                }
+                foreach(string requiredKey in keys)
+                {
+                    if (requiredKey != "cid")
+                    {
+                        if (!justKeys.Contains(requiredKey))
+                            return false;
+                    }
+                }
+                return true;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+
+namespace Advent_of_Code_2020
+{
+    class Program
+    {
+        // I just added one, this isnt really a solution, something is missing, i did to part 1 too
+        static void Main(string[] args)
+        {
+            string[] data = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
+            List<string> validPassportBuffer = new List<string>();
+            int validPassportCount = 0;
+            foreach (string line in data)
+            {
+                if (line != "")
+                {
+                    foreach (string s in line.Split(" "))
+                    {
+                        validPassportBuffer.Add(s);
+                    }
+                }
+                else
+                {
+                        
+                    if (validPassportBuffer.Count >= 7)
+                    {
+                        string ss = "";
+                        foreach(string s in validPassportBuffer)
+                        {
+                            ss += s;
+                        }
+                        //Console.WriteLine(ss);
+                        if (PassportValid(validPassportBuffer))
+                        {
+                            //Console.WriteLine("valid");
+                            validPassportCount++;
+                        }
+                    }
+                    validPassportBuffer = new List<string>();
+                }
+            }
+            Console.WriteLine(validPassportCount);
+            bool PassportValid(List<string> passport)
+            {
+                List<string> validKeys = new List<string> { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid" };
+                List<string> keys = new List<string>();
+                List<string> values = new List<string>();
+                foreach(string keyInPassport in passport)
+                {
+                    string[] kvpSplit = keyInPassport.Split(":");
+                    keys.Add(kvpSplit[0]);
+                    values.Add(kvpSplit[1]);
+                }
+                foreach (string validKey in validKeys)
+                {
+                    if (!keys.Contains(validKey) && validKey != "cid")
+                    {
+                        //Console.WriteLine(validKey);
+                        return false;
+                    }
+                }
+                foreach(string kvp in passport)
+                {
+                    string[] kvpSplit = kvp.Split(":");
+                    switch (kvpSplit[0])
+                    {
+                        case "byr":
+                            if (kvpSplit[1].Length != 4 || !(Int32.Parse(kvpSplit[1]) >= 1920 && Int32.Parse(kvpSplit[1]) <= 2002))
+                            {
+                                //Console.WriteLine(kvp);
+                                return false;
+                            }
+                            break;
+                        case "iyr":
+                            if (kvpSplit[1].Length != 4 || !(Int32.Parse(kvpSplit[1]) >= 2010 && Int32.Parse(kvpSplit[1]) <= 2020))
+                            {
+                                //Console.WriteLine(kvp);
+                                return false;
+                            }
+                            break;
+                        case "eyr":
+                            if (kvpSplit[1].Length != 4 || !(Int32.Parse(kvpSplit[1]) >= 2020 && Int32.Parse(kvpSplit[1]) <= 2030))
+                            {
+                                //Console.WriteLine(kvp);
+                                return false;
+                            }
+                            break;
+                        case "hgt":
+                            if (!(kvpSplit[1].EndsWith('m') || kvpSplit[1].EndsWith('n')))
+                            {
+                                //Console.WriteLine(kvp);
+                                return false;
+                            }
+                            if (kvpSplit[1].EndsWith('m'))
+                            {
+                                int indexOfC = kvpSplit[1].IndexOf('c');
+                                if (!(Int32.Parse(kvpSplit[1].Substring(0, indexOfC)) >= 150 && Int32.Parse(kvpSplit[1].Substring(0, indexOfC)) <= 193))
+                                {
+                                    Console.WriteLine(kvp);
+                                    return false;
+                                }
+                            }
+                            else if (kvpSplit[1].EndsWith('n'))
+                            {
+                                int indexOfC = kvpSplit[1].IndexOf('i');
+                                if (!(Int32.Parse(kvpSplit[1].Substring(0, indexOfC)) >= 59 && Int32.Parse(kvpSplit[1].Substring(0, indexOfC)) <= 76))
+                                {
+                                    Console.WriteLine(kvp);
+                                    return false;
+                                }
+                            }
+                            break;
+                        case "hcl":
+                            if (kvpSplit[1].Substring(0, 1) != "#")
+                            {
+                                if (kvpSplit[1].Length != 7)
+                                {
+                                    //Console.WriteLine(kvp);
+                                    return false;
+                                }
+                                return false;
+                            }
+                            break;
+                        case "ecl":
+                            List<string> allowedEyeColors = new List<string>{ "amb", "blu", "brn", "gry", "grn", "hzl", "oth" };
+                            if (!allowedEyeColors.Contains(kvpSplit[1]))
+                            {
+                                //Console.WriteLine(kvp);
+                                return false;
+                            }
+                            break;
+                        case "pid":
+                            int a = -1;
+                            if (kvpSplit[1].Length != 9 || !Int32.TryParse(kvpSplit[1], out a))
+                            {
+                                //Console.WriteLine(kvp);
+                                return false;
+                            }
+                            break;
+                    }
+                }
+                return true;
+            }
+            static void Print(List<string> passport)
+            {
+                string pass = "";
+                foreach (string s in passport)
+                {
+                    pass += s;
+                }
+                Console.WriteLine(pass);
+            }
+        }
+    }
+}

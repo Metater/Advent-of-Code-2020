@@ -1,0 +1,103 @@
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+
+namespace Advent_of_Code_2020
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] map = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
+            int slopeX = 3;
+            int slopeY = 1;
+            int locX = 0;
+            int locY = 0;
+            int treeCols = 0;
+            int lineLength = map[0].Length;
+            for (int i = 0; locY < map.Length; i++)
+            {
+                TreeColisions();
+                IncrementPos();
+            }
+                Console.WriteLine(treeCols);
+            void IncrementPos()
+            {
+                locX += slopeX;
+                locY += slopeY;
+                if (locX > lineLength-1)
+                    locX -= lineLength;
+            }
+            void TreeColisions()
+            {
+                Console.WriteLine($"{locX}, {locY}");
+                string line = map[locY];
+                if (line[locX] == '#')
+                    treeCols++;
+            }
+        }
+    }
+}
+
+
+
+
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+
+namespace Advent_of_Code_2020
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] map = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
+            List<long> treeCols = new List<long>();
+            treeCols.Add(CheckTreeColsWithSlope(1, 1, map));
+            treeCols.Add(CheckTreeColsWithSlope(3, 1, map));
+            treeCols.Add(CheckTreeColsWithSlope(5, 1, map));
+            treeCols.Add(CheckTreeColsWithSlope(7, 1, map));
+            treeCols.Add(CheckTreeColsWithSlope(1, 2, map));
+            long product = 1;
+            foreach(long treeCol in treeCols)
+            {
+                product *= treeCol;
+            }
+            Console.WriteLine(product);
+        }
+        static int CheckTreeColsWithSlope(int slopeX, int slopeY, string[] map)
+        {
+            int locX = 0;
+            int locY = 0;
+            int treeCols = 0;
+            int lineLength = map[0].Length;
+            for (int i = 0; locY < map.Length; i++)
+            {
+                TreeColisions();
+                IncrementPos();
+            }
+            return treeCols;
+            void IncrementPos()
+            {
+                locX += slopeX;
+                locY += slopeY;
+                if (locX > lineLength - 1)
+                    locX -= lineLength;
+            }
+            void TreeColisions()
+            {
+                //Console.WriteLine($"{locX}, {locY}");
+                string line = map[locY];
+                if (line[locX] == '#')
+                    treeCols++;
+            }
+        }
+    }
+}

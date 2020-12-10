@@ -1,0 +1,128 @@
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+
+namespace Advent_of_Code_2020
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Added 2 lines to input file
+            string[] data = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
+            List<List<string>> questionLinesInGroups = new List<List<string>>();
+            List<string> questionLinesInGroupBuffer = new List<string>();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (data[i] != "")
+                {
+                    questionLinesInGroupBuffer.Add(data[i]);
+                }
+                else
+                {
+                    questionLinesInGroups.Add(questionLinesInGroupBuffer);
+                    questionLinesInGroupBuffer = new List<string>();
+                }
+            }
+
+            int sumOfYesQuestions = 0;
+            foreach(List<string> group in questionLinesInGroups)
+            {
+                List<char> uniqueYesQuestions = new List<char>();
+
+                foreach(string questionLine in group)
+                {
+                    foreach(char question in questionLine)
+                    {
+                        if (!uniqueYesQuestions.Contains(question))
+                            uniqueYesQuestions.Add(question);
+                    }
+                }
+                sumOfYesQuestions += uniqueYesQuestions.Count;
+            }
+            Console.WriteLine(sumOfYesQuestions);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+
+namespace Advent_of_Code_2020
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Added 2 lines to input file
+            string[] data = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
+            List<List<string>> questionLinesInGroups = new List<List<string>>();
+            List<string> questionLinesInGroupBuffer = new List<string>();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (data[i] != "")
+                {
+                    questionLinesInGroupBuffer.Add(data[i]);
+                }
+                else
+                {
+                    questionLinesInGroups.Add(questionLinesInGroupBuffer);
+                    questionLinesInGroupBuffer = new List<string>();
+                }
+            }
+
+            int sumOfYesQuestions = 0;
+            foreach(List<string> group in questionLinesInGroups)
+            {
+                List<char> uniqueYesQuestions = new List<char>();
+                List<char> uniqueYesQuestionsInGroup = new List<char>();
+
+                foreach (string questionLine in group)
+                {
+                    foreach(char question in questionLine)
+                    {
+                        if (!uniqueYesQuestions.Contains(question))
+                            uniqueYesQuestions.Add(question);
+                    }
+                }
+                foreach(char uniqueYesQuestion in uniqueYesQuestions)
+                {
+                    bool eachUniqueYesQuestionContainedInLine = true;
+                    foreach (string questionLine in group)
+                    {
+                        if (!questionLine.Contains(uniqueYesQuestion))
+                        {
+                            eachUniqueYesQuestionContainedInLine = false;
+                        }
+                    }
+                    if (eachUniqueYesQuestionContainedInLine)
+                    {
+                        uniqueYesQuestionsInGroup.Add(uniqueYesQuestion);
+                    }
+                }
+                sumOfYesQuestions += uniqueYesQuestionsInGroup.Count;
+            }
+            Console.WriteLine(sumOfYesQuestions);
+        }
+    }
+}

@@ -1,0 +1,49 @@
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+
+namespace Advent_of_Code_2020
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Did first try, no help
+
+
+
+            string[] data = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
+            List<int> ranInstructions = new List<int>();
+            int acc = 0;
+            for (int pc = 0; !ranInstructions.Contains(pc);)
+            {
+                string[] words = data[pc].Split();
+                string operation = words[0];
+                int argument = Int32.Parse(words[1]);
+                switch(operation)
+                {
+                    case "acc":
+                        ranInstructions.Add(pc);
+                        acc += argument;
+                        pc++;
+                        break;
+                    case "jmp":
+                        ranInstructions.Add(pc);
+                        pc += argument;
+                        break;
+                    case "nop":
+                        ranInstructions.Add(pc);
+                        pc++;
+                        break;
+                    default:
+                        Console.WriteLine("Shouldnt be here: " + pc);
+                        break;
+                }
+            }
+            Console.WriteLine(acc);
+        }
+    }
+}

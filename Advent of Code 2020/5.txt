@@ -1,0 +1,148 @@
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+
+namespace Advent_of_Code_2020
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] data = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
+            List<int> seatIDs = new List<int>();
+            int maxSeatID = 0;
+            foreach (string BSP in data)
+            {
+                int seatID;
+
+                string rowBSP = BSP.Substring(0, 7);
+                //Console.WriteLine(rowBSP);
+                int row = GetRow(rowBSP);
+                seatID = row * 8;
+                string colBSP = BSP.Substring(7, 3);
+                int col = GetCol(colBSP);
+                seatID += col;
+
+                seatIDs.Add(seatID);
+            }
+            foreach (int id in seatIDs)
+            {
+                if (id > maxSeatID)
+                    maxSeatID = id;
+            }
+            Console.WriteLine(maxSeatID);
+        }
+        static int GetRow(string rowBSP)
+        {
+            string row = "";
+            foreach (char rowBSPc in rowBSP)
+            {
+                if (rowBSPc == 'F')
+                    row += "0";
+                else
+                    row += "1";
+            }
+            string byteRow = Convert.ToString(Convert.ToByte(row, 2), 2);
+            return Convert.ToInt32(byteRow, 2);
+        }
+        static int GetCol(string colBSP)
+        {
+            string col = "";
+            foreach (char colBSPc in colBSP)
+            {
+                if (colBSPc == 'L')
+                    col += "0";
+                else
+                    col += "1";
+            }
+            string byteCol = Convert.ToString(Convert.ToByte(col, 2), 2);
+            return Convert.ToInt32(byteCol, 2);
+        }
+    }
+}
+
+
+
+
+
+
+
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+
+namespace Advent_of_Code_2020
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] data = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
+            List<int> seatIDs = new List<int>();
+            int minSeatID = 10000000;
+            int maxSeatID = 0;
+            foreach (string BSP in data)
+            {
+                int seatID;
+
+                string rowBSP = BSP.Substring(0, 7);
+                //Console.WriteLine(rowBSP);
+                int row = GetRow(rowBSP);
+                seatID = row * 8;
+                string colBSP = BSP.Substring(7, 3);
+                int col = GetCol(colBSP);
+                seatID += col;
+
+                seatIDs.Add(seatID);
+            }
+            foreach (int id in seatIDs)
+            {
+                if (id > maxSeatID)
+                    maxSeatID = id;
+                if (id < minSeatID)
+                    minSeatID = id;
+            }
+            //Console.WriteLine(minSeatID);
+            //Console.WriteLine(maxSeatID);
+            seatIDs.Sort();
+            for(int i = minSeatID; i < maxSeatID +1; i++)
+            {
+                if (!seatIDs.Contains(i))
+                    Console.WriteLine(i);
+            }
+            //Console.WriteLine(maxSeatID);
+        }
+        static int GetRow(string rowBSP)
+        {
+            string row = "";
+            foreach (char rowBSPc in rowBSP)
+            {
+                if (rowBSPc == 'F')
+                    row += "0";
+                else
+                    row += "1";
+            }
+            string byteRow = Convert.ToString(Convert.ToByte(row, 2), 2);
+            return Convert.ToInt32(byteRow, 2);
+        }
+        static int GetCol(string colBSP)
+        {
+            string col = "";
+            foreach (char colBSPc in colBSP)
+            {
+                if (colBSPc == 'L')
+                    col += "0";
+                else
+                    col += "1";
+            }
+            string byteCol = Convert.ToString(Convert.ToByte(col, 2), 2);
+            return Convert.ToInt32(byteCol, 2);
+        }
+    }
+}
