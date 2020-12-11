@@ -14,7 +14,7 @@ namespace Advent_of_Code_2020
             // Attempt at p1, now using: https://github.com/Larqqa/Advent-of-Code-2020/blob/master/day7/Program.cs
             // This top part is my text parser mixed with his algorithm All Credit To Larqqa
             // I tryed for a while to do w/o cheating, but too hard, recursive functions are hard, they infinitly loop if you mess up certain logic
-
+            // Bottom part is all them
 
             string[] data = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
             List<Rule> rules = GetRules(data);
