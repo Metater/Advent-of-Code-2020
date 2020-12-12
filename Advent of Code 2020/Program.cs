@@ -11,101 +11,131 @@ namespace Advent_of_Code_2020
     {
         static void Main(string[] args)
         {
-            string[] datam = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\pws.txt");
-            for (int i = 0; i < datam.Length; i++)
-            {
-                string[] data = datam;
+            string[] data = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\input.txt");
 
-                if (data[i].Split(" ")[0] == "nop")
-                {
-                    Console.WriteLine("Replacing NOP with JMP");
-                    string nl = "jmp " + data[i].Split(" ")[1];
-                    data[i] = nl;
-                    int accumulator = DoTheThing(data);
-                    if (accumulator != -1)
-                        Console.WriteLine(accumulator);
-                }
-                else if (data[i].Split(" ")[0] == "jmp")
-                {
-                    Console.WriteLine("Replacing JMP with NOP");
-                    string nl = "nop " + data[i].Split(" ")[1];
-                    data[i] = nl;
-                    int accumulator = DoTheThing(data);
-                    if (accumulator != -1)
-                        Console.WriteLine(accumulator);
-                }
-                foreach(string a in data)
-                {
-                    //Console.WriteLine(i + a);
-                }
-            }
-            /*
-            int accumulator = DoTheThing(datam);
-            Console.WriteLine(accumulator);
-            */
-        }
-        static int DoTheThing(string[] data)
-        {
-            List<int> ranInstructions = new List<int>();
-            int acc = 0;
-            int pc = 0;
-            int step = 1;
-            for (pc = 0; step < 10;)
+            int width = data[0].Length;
+            int height = data.Length;
+
+            string[] previousGrid = new string[height];
+            string[] grid = data;
+            string[] dynamicGrid = new string[height];
+
+            for (int i = 0; (previousGrid != grid); i++)
             {
-                if (pc == data.Length)
+                for (int y = 0; y < height; y++)
                 {
-                    return acc;
+                    for (int x = 0; x < width; x++)
+                    {
+                        if (SeatBecomesOccupied() && SeatExists(x, y))
+                            dynamicGrid[y] = dynamicGrid[y].Replace('L', '#');
+                        else if (SeatIsLeft() && SeatExists(x, y))
+                            dynamicGrid[y] = dynamicGrid[y].Replace('#', 'L');
+                        bool SeatBecomesOccupied()
+                        {
+                            // adjacentNotOccupiedSeatCount
+                            int c = 0;
+                            if (SeatExistsAndNotOccupied(x, y+1))
+                                c++;
+                            if (SeatExistsAndNotOccupied(x+1, y+1))
+                                c++;
+                            if (SeatExistsAndNotOccupied(x+1, y))
+                                c++;
+                            if (SeatExistsAndNotOccupied(x+1, y-1))
+                                c++;
+                            if (SeatExistsAndNotOccupied(x, y-1))
+                                c++;
+                            if (SeatExistsAndNotOccupied(x-1, y-1))
+                                c++;
+                            if (SeatExistsAndNotOccupied(x-1, y))
+                                c++;
+                            if (SeatExistsAndNotOccupied(x-1, y+1))
+                                c++;
+                            if (c == 0)
+                                return true;
+                            return false;
+                        }
+                        bool SeatIsLeft()
+                        {
+                            // adjacentOccupiedSeatCount
+                            int c = 0;
+                            if (SeatExistsAndOccupied(x, y + 1))
+                                c++;
+                            if (SeatExistsAndOccupied(x + 1, y + 1))
+                                c++;
+                            if (SeatExistsAndOccupied(x + 1, y))
+                                c++;
+                            if (SeatExistsAndOccupied(x + 1, y - 1))
+                                c++;
+                            if (SeatExistsAndOccupied(x, y - 1))
+                                c++;
+                            if (SeatExistsAndOccupied(x - 1, y - 1))
+                                c++;
+                            if (SeatExistsAndOccupied(x - 1, y))
+                                c++;
+                            if (SeatExistsAndOccupied(x - 1, y + 1))
+                                c++;
+                            if (c >= 4)
+                                return true;
+                            return false;
+                        }
+                    }
                 }
-                if (step == 8)
-                    return -1;
-                string[] words = data[pc].Split();
-                string operation = words[0];
-                int argument = Int32.Parse(words[1]);
-                switch (operation)
+                previousGrid = grid;
+                grid = dynamicGrid;
+            }
+
+
+            int occupiedSeatCount = 0;
+
+            foreach (string line in grid)
+            {
+                foreach (char seat in line)
                 {
-                    case "acc":
-                        Console.WriteLine("\tACC: " + step);
-                        Console.WriteLine("\t\tPc: " + pc);
-                        Console.WriteLine("\t\tAcc: " + acc);
-                        Console.WriteLine("\t\tArg: " + argument);
-                        ranInstructions.Add(pc);
-                        acc += argument;
-                        pc++;
-                        step++;
-                        Console.WriteLine("\tACC: " + step);
-                        Console.WriteLine("\t\tPc: " + pc);
-                        Console.WriteLine("\t\tAcc: " + acc);
-                        Console.WriteLine("\t\tArg: " + argument);
-                        break;
-                    case "jmp":
-                        Console.WriteLine("\tJMP: " + step);
-                        Console.WriteLine("\t\tpc: " + pc);
-                        Console.WriteLine("\t\tacc: " + acc);
-                        Console.WriteLine("\t\tArg: " + argument);
-                        ranInstructions.Add(pc);
-                        pc += argument;
-                        step++;
-                        Console.WriteLine("\tJMP: " + step);
-                        Console.WriteLine("\t\tpc: " + pc);
-                        Console.WriteLine("\t\tacc: " + acc);
-                        Console.WriteLine("\t\tArg: " + argument);
-                        break;
-                    case "nop":
-                        Console.WriteLine("\tNOP: " + step);
-                        Console.WriteLine("\t\tpc: " + pc);
-                        Console.WriteLine("\t\tacc: " + acc);
-                        Console.WriteLine("\t\tArg: " + argument);
-                        ranInstructions.Add(pc);
-                        pc++;
-                        step++;
-                        Console.WriteLine("\tNOP: " + step);
-                        Console.WriteLine("\t\tpc: " + pc);
-                        Console.WriteLine("\t\tacc: " + acc);
-                        Console.WriteLine("\t\tArg: " + argument);
-                        break;
+                    if (seat == '#')
+                        occupiedSeatCount++;
                 }
             }
-            return acc;
+            Console.WriteLine(occupiedSeatCount);
+
+
+
+
+            bool SeatExists(int x, int y)
+            {
+                if (x > width-1 || x < 0)
+                    return false;
+                if (y > height-1 || y < 0)
+                    return false;
+                if (data[y][x] != 'L')
+                    return false;
+                return true;
+            }
+            bool SeatOccupied(int x, int y)
+            {
+                Console.WriteLine(x);
+                Console.WriteLine(y);
+                foreach (string line in grid)
+                    Console.WriteLine(line);
+                Console.WriteLine("------------------------------------------------");
+                
+                if (grid[y][x] == '#')
+                    return true;
+                return false;
+            }
+            bool SeatExistsAndNotOccupied(int x, int y)
+            {
+                if (SeatExists(x, y))
+                    if (!SeatOccupied(x, y))
+                    return true;
+                return false;
+            }
+            bool SeatExistsAndOccupied(int x, int y)
+            {
+                if (SeatExists(x, y))
+                    if (SeatOccupied(x, y))
+                        return true;
+                return false;
+            }
         }
     }
 }
