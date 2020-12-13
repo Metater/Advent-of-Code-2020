@@ -16,39 +16,46 @@ namespace Advent_of_Code_2020
             int width = data[0].Length;
             int height = data.Length;
 
-            string[] previousGrid = new string[height];
             string[] grid = data;
-            string[] dynamicGrid = new string[height];
 
-            for (int i = 0; (previousGrid != grid); i++)
+            for (int i = 0; i < 1; i++)
             {
+                string[] dynamicGrid = grid;
+
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        if (SeatBecomesOccupied() && SeatExists(x, y))
-                            dynamicGrid[y] = dynamicGrid[y].Replace('L', '#');
-                        else if (SeatIsLeft() && SeatExists(x, y))
-                            dynamicGrid[y] = dynamicGrid[y].Replace('#', 'L');
+
+                        if (SeatBecomesOccupied())
+                        {
+                            Console.WriteLine(dynamicGrid[y].Remove(x, 1).Insert(1, "#"));
+                            dynamicGrid[y] = dynamicGrid[y].Remove(x, 1).Insert(1, "#");
+                        }
+                        else if (SeatIsLeft())
+                        {
+                            Console.WriteLine(x + " : " + y);
+                            dynamicGrid[y] = dynamicGrid[y].Remove(x, 1).Insert(1, "L");
+                        }
                         bool SeatBecomesOccupied()
                         {
                             // adjacentNotOccupiedSeatCount
                             int c = 0;
-                            if (SeatExistsAndNotOccupied(x, y+1))
+                            if (SeatExistsAndNotOccupied(x, y + 1))
                                 c++;
-                            if (SeatExistsAndNotOccupied(x+1, y+1))
+                            if (SeatExistsAndNotOccupied(x + 1, y + 1))
                                 c++;
-                            if (SeatExistsAndNotOccupied(x+1, y))
+                            if (SeatExistsAndNotOccupied(x + 1, y))
                                 c++;
-                            if (SeatExistsAndNotOccupied(x+1, y-1))
+                            if (SeatExistsAndNotOccupied(x + 1, y - 1))
                                 c++;
-                            if (SeatExistsAndNotOccupied(x, y-1))
+                            if (SeatExistsAndNotOccupied(x, y - 1))
                                 c++;
-                            if (SeatExistsAndNotOccupied(x-1, y-1))
+                            if (SeatExistsAndNotOccupied(x - 1, y - 1))
                                 c++;
-                            if (SeatExistsAndNotOccupied(x-1, y))
+                            if (SeatExistsAndNotOccupied(x - 1, y))
                                 c++;
-                            if (SeatExistsAndNotOccupied(x-1, y+1))
+                            if (SeatExistsAndNotOccupied(x - 1, y + 1))
                                 c++;
                             if (c == 0)
                                 return true;
@@ -80,44 +87,45 @@ namespace Advent_of_Code_2020
                         }
                     }
                 }
-                previousGrid = grid;
                 grid = dynamicGrid;
-            }
 
+                /*
+                int occupiedSeatCount = 0;
+                Console.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
-            int occupiedSeatCount = 0;
-
-            foreach (string line in grid)
-            {
-                foreach (char seat in line)
+                foreach (string line in grid)
                 {
-                    if (seat == '#')
-                        occupiedSeatCount++;
+                    Console.WriteLine(line);
+                    foreach (char seat in line)
+                    {
+                        if (seat == '#')
+                            occupiedSeatCount++;
+                    }
                 }
+                Console.WriteLine("Occupied Seat Cout: " + occupiedSeatCount);
+                */
             }
-            Console.WriteLine(occupiedSeatCount);
 
 
 
 
             bool SeatExists(int x, int y)
             {
-                if (x > width-1 || x < 0)
-                    return false;
-                if (y > height-1 || y < 0)
-                    return false;
-                if (data[y][x] != 'L')
-                    return false;
-                return true;
+                bool withinWidth = x < width && x > 0;
+                bool withinHeight = y < height && y > 0;
+                if (withinWidth && withinHeight)
+                {
+                    if (data[y][x] == 'L' || data[y][x] == '#')
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
             bool SeatOccupied(int x, int y)
             {
-                Console.WriteLine(x);
-                Console.WriteLine(y);
-                foreach (string line in grid)
-                    Console.WriteLine(line);
-                Console.WriteLine("------------------------------------------------");
-                
+                //Console.WriteLine(x);
+                //Console.WriteLine(grid[y][x]);
                 if (grid[y][x] == '#')
                     return true;
                 return false;
@@ -132,8 +140,12 @@ namespace Advent_of_Code_2020
             bool SeatExistsAndOccupied(int x, int y)
             {
                 if (SeatExists(x, y))
+                {
                     if (SeatOccupied(x, y))
+                    {
                         return true;
+                    }
+                }
                 return false;
             }
         }
